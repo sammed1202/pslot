@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import UserRouter from './routes/userRoutes.js';
 import ParkingRouter from './routes/parkingRoutes.js';
+import slotRoutes from "./routes/slotRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
 
@@ -17,6 +19,8 @@ dotenv.config();
 app.use("/api/parking", ParkingRouter);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/users", UserRouter);
+app.use("/api/slots", slotRoutes);
+app.use("/api/bookings",bookingRoutes);
 
 const PORT = process.env.PORT || 2000;
 const URL = process.env.MONGOURL;

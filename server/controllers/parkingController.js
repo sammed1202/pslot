@@ -1,6 +1,8 @@
 import Parking from "../models/Parking.js";
 import fs from "fs";
 import path from "path";
+import Slot from "../models/Slot.js";
+
 
 /* Create Parking */
 export const createParking = async (req, res) => {
@@ -27,6 +29,19 @@ export const createParking = async (req, res) => {
     });
 
     await newParking.save();
+
+    /* Generate Slots */
+    const slots = [];
+
+    for (let i = 1; i <= totalSlots; i++) {
+      slots.push({
+        parkingId: newParking._id,
+        slotNumber: `A${i}`,
+        status: "available",
+      });
+    }
+
+    await Slot.insertMany(slots);
 
     res.status(201).json({
       message: "Parking created successfully",
@@ -164,3 +179,21 @@ export const getSingleParking = async (req, res) => {
     });
   }
 };
+
+export const getAllParkings = async (req, res) => {
+
+  try {
+
+    const parkings = await Parking.find();
+
+    res.json(parkings);
+
+  } catch (error) {
+
+    res.status(500).json({ message: error.message });
+
+  }
+
+};
+
+{/* */}
