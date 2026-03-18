@@ -6,6 +6,9 @@ import UserRouter from './routes/userRoutes.js';
 import ParkingRouter from './routes/parkingRoutes.js';
 import slotRoutes from "./routes/slotRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import "./utils/cronJobs.js"; // Import cron jobs to run them
+import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
@@ -21,6 +24,8 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/users", UserRouter);
 app.use("/api/slots", slotRoutes);
 app.use("/api/bookings",bookingRoutes);
+app.use("/api/admin",adminRoutes);
+app.use("/api/contact", contactRoutes);
 
 const PORT = process.env.PORT || 2000;
 const URL = process.env.MONGOURL;

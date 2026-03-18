@@ -1,37 +1,57 @@
 import mongoose from "mongoose";
-      import bcrypt from "bcryptjs";
-      
-      // Define schema (structure of user collection in DB)
-      const userSchema = new mongoose.Schema({
-        name: {
-          type: String,
-          required: true, // must provide
-        },
-        email: {
-          type: String,
-          required: true,
-          unique: true, // no duplicate emails
-        },
-        contact: {
-          type: String,
-          required: true,
-        },
-        password: {
-          type: String,
-          required: true,
-        },
-        role:{
-          type: String,
-          default: "user", // default role is user 
-          enum: ["user", "admin","owner"] ,// can be either user or admin
-        },
-      });
-      
-      // Before saving → hash password
-      userSchema.pre("save", async function () {
-        if (!this.isModified("password")) return; // only hash if password is new
-        this.password = await bcrypt.hash(this.password, 10);
-      });
-      
-      const User = mongoose.model("User", userSchema);
-      export default User;
+import bcrypt from "bcryptjs";
+
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+
+    contact: {
+      type: String,
+      required: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+
+    role: {
+      type: String,
+      enum: ["user", "admin", "owner"],
+      default: "user",
+    },
+
+    // ✅ SOFT DELETE
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  { timestamps: true }
+);
+
+// 🔐 Hash password before save
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+export default mongoose.model("User", userSchema);
